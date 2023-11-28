@@ -94,7 +94,10 @@ def clean_img(img):
     dst = cv2.fastNlMeansDenoising(img, None, 30, 7, 21)
     blur_img = blur(dst, 3)
     _, thresh = cv2.threshold(blur_img, 127, 255, 0)
-    return thresh
+    cv2.imwrite("temp.jpg", thresh)
+
+    is_success, buffer = cv2.imencode(".jpg", thresh)
+    return buffer
 
 def draw_contour(cnt, img_shape):
     img = np.zeros(img_shape)

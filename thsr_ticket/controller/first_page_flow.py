@@ -1,5 +1,7 @@
 import io
 import json
+import numpy as np
+import ddddocr
 from PIL import Image
 from typing import Tuple
 from datetime import date, timedelta
@@ -7,6 +9,7 @@ from datetime import date, timedelta
 from bs4 import BeautifulSoup
 from requests.models import Response
 
+from thsr_ticket.ml.image_process import clean_img
 from thsr_ticket.model.db import Record
 from thsr_ticket.remote.http_request import HTTPRequest
 from thsr_ticket.configs.web.param_schema import BookingModel
@@ -140,7 +143,11 @@ def _parse_search_by(page: BeautifulSoup) -> str:
 
 
 def _input_security_code(img_resp: bytes) -> str:
-    print('輸入驗證碼：')
+    print('偵測驗證碼...')
     image = Image.open(io.BytesIO(img_resp))
-    image.show()
-    return input()
+    clean_img(np.array(image))
+    io_buf = io.BytesIO(clean_img(np.array(image)))
+    ocr = ddddocr.DdddOcr()
+    res = ocr.classification(io_buf.getvalue())
+    print(res)
+    return res.upper()
