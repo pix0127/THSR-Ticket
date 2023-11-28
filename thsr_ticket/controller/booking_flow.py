@@ -30,7 +30,7 @@ class BookingFlow:
             return book_resp
 
         # Second page. Train confirmation
-        train_resp, train_model = ConfirmTrainFlow(self.client, book_resp).run()
+        train_resp, train_model = ConfirmTrainFlow(self.client, book_resp, self.record).run()
         if self.show_error(train_resp.content):
             return train_resp
 
@@ -45,7 +45,7 @@ class BookingFlow:
         book.show(result_model)
         print("\n請使用官方提供的管道完成後續付款以及取票!!")
 
-        self.db.save(book_model, ticket_model)
+        self.db.save(book_model, ticket_model, train_model)
         return ticket_resp
 
     def show_history(self) -> None:

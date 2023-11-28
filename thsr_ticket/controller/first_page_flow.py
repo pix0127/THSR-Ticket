@@ -72,6 +72,8 @@ class FirstPageFlow:
         )
 
     def select_date(self, date_type: str) -> str:
+        if self.record:
+            return self.record.outbound_date
         today = date.today()
         last_avail_date = today + timedelta(days=DAYS_BEFORE_BOOKING_AVAILABLE)
         print(f'選擇{date_type}日期（{today}~{last_avail_date}）（預設為今日）：')
