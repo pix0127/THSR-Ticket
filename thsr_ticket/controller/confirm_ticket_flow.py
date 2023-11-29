@@ -10,13 +10,15 @@ from thsr_ticket.remote.http_request import HTTPRequest
 
 
 class ConfirmTicketFlow:
-    def __init__(self, client: HTTPRequest, train_resp: Response, record: Record = None):
+    def __init__(
+        self, client: HTTPRequest, train_resp: Response, record: Record = None
+    ):
         self.client = client
         self.train_resp = train_resp
         self.record = record
 
     def run(self) -> Tuple[Response]:
-        page = BeautifulSoup(self.train_resp.content, features='html.parser')
+        page = BeautifulSoup(self.train_resp.content, features="html.parser")
         ticket_model = ConfirmTicketModel(
             personal_id=self.set_personal_id(),
             phone_num=self.set_phone_num(),
@@ -32,7 +34,7 @@ class ConfirmTicketFlow:
         if self.record and (personal_id := self.record.personal_id):
             return personal_id
 
-        return input(f'輸入身分證字號：\n')
+        return input(f"輸入身分證字號：\n")
 
     def set_phone_num(self) -> str:
         if self.record and (phone_num := self.record.phone):
@@ -40,15 +42,15 @@ class ConfirmTicketFlow:
 
         if phone_num := input('輸入手機號碼（預設：""）：\n'):
             return phone_num
-        return ''
+        return ""
 
 
 def _parse_member_radio(page: BeautifulSoup) -> str:
     candidates = page.find_all(
-        'input',
+        "input",
         attrs={
-            'name': 'TicketMemberSystemInputPanel:TakerMemberSystemDataView:memberSystemRadioGroup'
+            "name": "TicketMemberSystemInputPanel:TakerMemberSystemDataView:memberSystemRadioGroup"
         },
     )
-    tag = next((cand for cand in candidates if 'checked' in cand.attrs))
-    return tag.attrs['value']
+    tag = next((cand for cand in candidates if "checked" in cand.attrs))
+    return tag.attrs["value"]

@@ -5,7 +5,11 @@ from tinydb import TinyDB, Query
 from tinydb.database import Document
 
 from thsr_ticket import MODULE_PATH
-from thsr_ticket.configs.web.param_schema import BookingModel, ConfirmTicketModel, ConfirmTrainModel
+from thsr_ticket.configs.web.param_schema import (
+    BookingModel,
+    ConfirmTicketModel,
+    ConfirmTrainModel,
+)
 
 
 class Record(NamedTuple):
@@ -24,11 +28,16 @@ class ParamDB:
         if db_path is None:
             db_path = os.path.join(MODULE_PATH, ".db", "history.json")
         self.db_path = db_path
-        db_dir = db_path[:db_path.rfind("/")]
+        db_dir = db_path[: db_path.rfind("/")]
         if not os.path.exists(db_dir):
             os.makedirs(db_dir)
 
-    def save(self, book_model: BookingModel, ticket: ConfirmTicketModel, train: ConfirmTrainModel) -> None:
+    def save(
+        self,
+        book_model: BookingModel,
+        ticket: ConfirmTicketModel,
+        train: ConfirmTrainModel,
+    ) -> None:
         data = Record(
             ticket.personal_id,
             ticket.phone_num,
@@ -37,7 +46,7 @@ class ParamDB:
             book_model.outbound_date,
             book_model.outbound_time,
             book_model.adult_ticket_num,
-            train.selected_train
+            train.selected_train,
         )._asdict()  # type: ignore
         with TinyDB(self.db_path, sort_keys=True, indent=4) as db:
             hist = db.search(Query().personal_id == ticket.personal_id)
@@ -47,7 +56,7 @@ class ParamDB:
     def get_history(self) -> List[Record]:
         with TinyDB(self.db_path) as db:
             dicts = db.all()
-        return [Record(**d) for d in dicts]   # type: ignore
+        return [Record(**d) for d in dicts]  # type: ignore
 
     def _compare_hist(self, data: Mapping[str, Any], hist: Iterable[Document]) -> int:
         for idx, h in enumerate(hist):
@@ -55,6 +64,7 @@ class ParamDB:
             if len(comp) == len(data):
                 return idx
         return None
+
     def remove(self, idx: int) -> None:
         with TinyDB(self.db_path) as db:
             db.remove(doc_ids=[idx])

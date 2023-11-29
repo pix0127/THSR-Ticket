@@ -22,20 +22,26 @@ class BookingFlow:
         self.show_error_msg = ShowErrorMsg()
 
     def run(self) -> Response:
-        #self.show_history()
+        # self.show_history()
 
         # First page. Booking options
-        book_resp, book_model = FirstPageFlow(client=self.client, record=self.record).run()
+        book_resp, book_model = FirstPageFlow(
+            client=self.client, record=self.record
+        ).run()
         if self.show_error(book_resp.content):
             return book_resp
 
         # Second page. Train confirmation
-        train_resp, train_model = ConfirmTrainFlow(self.client, book_resp, self.record).run()
+        train_resp, train_model = ConfirmTrainFlow(
+            self.client, book_resp, self.record
+        ).run()
         if self.show_error(train_resp.content):
             return train_resp
 
         # Final page. Ticket confirmation
-        ticket_resp, ticket_model = ConfirmTicketFlow(self.client, train_resp, self.record).run()
+        ticket_resp, ticket_model = ConfirmTicketFlow(
+            self.client, train_resp, self.record
+        ).run()
         if self.show_error(ticket_resp.content):
             return ticket_resp
 
@@ -47,7 +53,7 @@ class BookingFlow:
 
         self.db.save(book_model, ticket_model, train_model)
         return ticket_resp
-    
+
     def auto_run(self):
         hist = self.db.get_history()
         remove_list = []
@@ -60,14 +66,13 @@ class BookingFlow:
                 else:
                     break
             if count == 3:
-                print("第{}筆訂購失敗".format(hist.index(i)+1))
+                print("第{}筆訂購失敗".format(hist.index(i) + 1))
             else:
-                print("第{}筆訂購成功".format(hist.index(i)+1))
-                remove_list.append(hist.index(i)+1)
-           
+                print("第{}筆訂購成功".format(hist.index(i) + 1))
+                remove_list.append(hist.index(i) + 1)
+
         for i in remove_list:
             self.db.remove(i)
-        
 
     def show_history(self) -> None:
         hist = self.db.get_history()
@@ -84,7 +89,7 @@ class BookingFlow:
 
         self.show_error_msg.show(errors)
         return True
-    
+
     def is_error(self, html: bytes) -> bool:
         errors = self.error_feedback.parse(html)
         if len(errors) == 0:
