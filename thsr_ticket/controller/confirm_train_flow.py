@@ -30,7 +30,7 @@ class ConfirmTrainFlow:
         return resp, confirm_model
 
     def select_available_trains(self, trains: List[Train], default_value: int = 1) -> Train:
-        if self.record:
+        if self.record and self.record.selected_train != None:
             return self.record.selected_train
         for idx, train in enumerate(trains, 1):
             print(

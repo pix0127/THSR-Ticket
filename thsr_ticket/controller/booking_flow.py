@@ -22,7 +22,7 @@ class BookingFlow:
         self.show_error_msg = ShowErrorMsg()
 
     def run(self) -> Response:
-        self.show_history()
+        #self.show_history()
 
         # First page. Booking options
         book_resp, book_model = FirstPageFlow(client=self.client, record=self.record).run()
@@ -47,6 +47,27 @@ class BookingFlow:
 
         self.db.save(book_model, ticket_model, train_model)
         return ticket_resp
+    
+    def auto_run(self):
+        hist = self.db.get_history()
+        remove_list = []
+        for i in hist:
+            self.record = i
+            count = 0
+            while count < 3:
+                if self.is_error(self.run().content):
+                    count += 1
+                else:
+                    break
+            if count == 3:
+                print("第{}筆訂購失敗".format(hist.index(i)+1))
+            else:
+                print("第{}筆訂購成功".format(hist.index(i)+1))
+                remove_list.append(hist.index(i)+1)
+           
+        for i in remove_list:
+            self.db.remove(i)
+        
 
     def show_history(self) -> None:
         hist = self.db.get_history()
@@ -62,4 +83,10 @@ class BookingFlow:
             return False
 
         self.show_error_msg.show(errors)
+        return True
+    
+    def is_error(self, html: bytes) -> bool:
+        errors = self.error_feedback.parse(html)
+        if len(errors) == 0:
+            return False
         return True

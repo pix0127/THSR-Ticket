@@ -72,7 +72,7 @@ class FirstPageFlow:
         )
 
     def select_date(self, date_type: str) -> str:
-        if self.record:
+        if self.record and self.record.outbound_date != None:
             return self.record.outbound_date
         today = date.today()
         last_avail_date = today + timedelta(days=DAYS_BEFORE_BOOKING_AVAILABLE)

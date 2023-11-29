@@ -55,3 +55,6 @@ class ParamDB:
             if len(comp) == len(data):
                 return idx
         return None
+    def remove(self, idx: int) -> None:
+        with TinyDB(self.db_path) as db:
+            db.remove(doc_ids=[idx])
