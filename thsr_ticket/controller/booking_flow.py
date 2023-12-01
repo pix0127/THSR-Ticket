@@ -51,7 +51,7 @@ class BookingFlow:
         book.show(result_model)
         print("\n請使用官方提供的管道完成後續付款以及取票!!")
 
-        self.db.save(book_model, ticket_model, train_model)
+        #self.db.save(book_model, ticket_model, train_model)
         return ticket_resp
 
     def auto_run(self):
@@ -67,12 +67,14 @@ class BookingFlow:
                     break
             if count == 3:
                 print("第{}筆訂購失敗".format(hist.index(i) + 1))
+                self.client = HTTPRequest()
             else:
                 print("第{}筆訂購成功".format(hist.index(i) + 1))
                 remove_list.append(hist.index(i) + 1)
+                self.client = HTTPRequest()
 
-        for i in remove_list:
-            self.db.remove(i)
+        # for i in remove_list:
+        #     self.db.remove(i)
 
     def show_history(self) -> None:
         hist = self.db.get_history()

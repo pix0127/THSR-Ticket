@@ -21,6 +21,7 @@ class Record(NamedTuple):
     outbound_time: str = None
     adult_num: str = None
     selected_train: str = None
+    selection_time: List[str] = None
 
 
 class ParamDB:
