@@ -20,8 +20,24 @@ class Record(NamedTuple):
     outbound_date: str = None
     outbound_time: str = None
     adult_num: str = None
-    selected_train: str = None
     selection_time: List[str] = None
+
+
+class RecordFirstPage:
+    start_station: int = None
+    dest_station: int = None
+    outbound_date: str = None
+    outbound_time: str = None
+    adult_num: str = None
+
+
+class RecordTrainPage:
+    selection_time: List[str] = None
+
+
+class RecordTicketPage:
+    personal_id: List[str] = None
+    phone: str = None
 
 
 class ParamDB:
@@ -53,6 +69,22 @@ class ParamDB:
             hist = db.search(Query().personal_id == ticket.personal_id)
             if self._compare_hist(data, hist) is None:
                 db.insert(data)
+
+    def save(
+        self, first: RecordFirstPage, train: RecordTrainPage, ticket: RecordTicketPage
+    ) -> None:
+        data = Record(
+            ticket.personal_id[0], #還沒加早鳥票填入
+            ticket.phone,
+            first.start_station,
+            first.dest_station,
+            first.outbound_date,
+            first.outbound_time,
+            first.adult_num,
+            train.selection_time,
+        )._asdict()
+        with TinyDB(self.db_path, sort_keys=True, indent=4) as db:
+            db.insert(data)
 
     def get_history(self) -> List[Record]:
         with TinyDB(self.db_path) as db:

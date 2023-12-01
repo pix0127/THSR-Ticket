@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 from requests.models import Response
 
 from thsr_ticket.ml.image_process import clean_img
-from thsr_ticket.model.db import Record
+from thsr_ticket.model.db import Record, RecordFirstPage
 from thsr_ticket.remote.http_request import HTTPRequest
 from thsr_ticket.configs.web.param_schema import BookingModel
 from thsr_ticket.configs.web.parse_html_element import BOOKING_PAGE
@@ -51,6 +51,16 @@ class FirstPageFlow:
         dict_params = json.loads(json_params)
         resp = self.client.submit_booking_form(dict_params)
         return resp, book_model
+    
+    def check_info(self) -> Tuple[Response, RecordFirstPage]:
+        resp , book_model=self.run()
+        record_data = RecordFirstPage()
+        record_data.start_station=book_model.start_station
+        record_data.dest_station=book_model.dest_station
+        record_data.outbound_date=book_model.outbound_date
+        record_data.outbound_time=book_model.outbound_time
+        record_data.adult_num=book_model.adult_ticket_num
+        return resp, record_data
 
     def select_station(
         self, travel_type: str, default_value: int = StationMapping.Taipei.value

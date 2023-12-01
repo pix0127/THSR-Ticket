@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 from requests.models import Response
 
-from thsr_ticket.model.db import Record
+from thsr_ticket.model.db import Record, RecordTrainPage
 from thsr_ticket.remote.http_request import HTTPRequest
 from thsr_ticket.view_model.avail_trains import AvailTrains
 from thsr_ticket.configs.web.param_schema import Train, ConfirmTrainModel
@@ -20,13 +20,29 @@ class ConfirmTrainFlow:
         if not trains:
             raise ValueError("No available trains!")
         confirm_model = ConfirmTrainModel(
-            #selected_train=self.select_available_trains(trains),
-            selected_train=self.select_available_trains_with_trainid(trains, self.record.selection_time),
+            # selected_train=self.select_available_trains(trains),
+            selected_train=self.select_available_trains_with_departtime(
+                trains, self.record.selection_time
+            ),
         )
         json_params = confirm_model.json(by_alias=True)
         dict_params = json.loads(json_params)
         resp = self.client.submit_train(dict_params)
         return resp, confirm_model
+
+    def check_info(self) -> Tuple[Response, RecordTrainPage]:
+        trains = AvailTrains().parse(self.book_resp.content)
+        if not trains:
+            raise ValueError("No available trains!")
+        selected_train = self.select_available_trains(trains)
+        confirm_model = ConfirmTrainModel(selected_train=selected_train.form_value)
+        json_params = confirm_model.json(by_alias=True)
+        dict_params = json.loads(json_params)
+        resp = self.client.submit_train(dict_params)
+        record_data = RecordTrainPage()
+        record_data.selection_time = []
+        record_data.selection_time.append(selected_train.depart)
+        return resp, record_data
 
     def select_available_trains(
         self, trains: List[Train], default_value: int = 1
@@ -39,12 +55,12 @@ class ConfirmTrainFlow:
                 f"{train.discount_str}"
             )
         selection = int(input(f"輸入選擇（預設：{default_value}）：") or default_value)
-        return trains[selection - 1].form_value
+        return trains[selection - 1]
 
-    def select_available_trains_with_trainid(
-        self, trains: List[Train], trains_leavetime: List[str]
+    def select_available_trains_with_departtime(
+        self, trains: List[Train], trains_departtime: List[str]
     ) -> Train:
-        for id in trains_leavetime:
+        for id in trains_departtime:
             rst = self.get_form_value_by_id(trains, id)
             if rst != None:
                 return rst
