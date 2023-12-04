@@ -37,6 +37,7 @@ class ConfirmTicketFlow:
 
     def set_personal_id(self) -> str:
         if self.record and (personal_id := self.record.personal_id):
+            self.id = personal_id
             return personal_id
         self.id = input(f"輸入身分證字號：\n")
         return self.id
