@@ -10,7 +10,7 @@ from thsr_ticket.remote.http_request import HTTPRequest
 
 
 class ConfirmTicketFlow:
-    id = None
+    id = []
     def __init__(
         self, client: HTTPRequest, train_resp: Response, record: Record = None
     ):
@@ -36,7 +36,7 @@ class ConfirmTicketFlow:
         return resp, ticket_model
 
     def set_personal_id(self) -> str:
-        if self.record and (personal_id := self.record.personal_id):
+        if self.record and (personal_id := self.record.personal_id[0]):
             self.id = personal_id
             return personal_id
         self.id = input(f"輸入身分證字號：\n")
@@ -51,15 +51,15 @@ class ConfirmTicketFlow:
         return ""
     
     def set_member_id(self) -> str:
-        if self.id != None:
-            return self.id
-        return ""
+        if len(self.id) > 0 and (personal_id := self.record.personal_id[0]):
+            return personal_id
+        return None
 
     def set_early_member_id(self, num: int, page: BeautifulSoup) -> str:
-        if self.id == None:
+        if len(self.id) < num:
             return None
         if page.find_all(attrs={"class":"uk-input passengerDataIdNumber"}).__len__() > num:
-            return self.id
+            return self.id[num]
         return None
 
 

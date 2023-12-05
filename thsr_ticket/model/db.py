@@ -13,7 +13,7 @@ from thsr_ticket.configs.web.param_schema import (
 
 
 class Record(NamedTuple):
-    personal_id: str = None
+    personal_id: List[str] = None
     phone: str = None
     start_station: int = None
     dest_station: int = None
@@ -74,7 +74,7 @@ class ParamDB:
         self, first: RecordFirstPage, train: RecordTrainPage, ticket: RecordTicketPage
     ) -> None:
         data = Record(
-            ticket.personal_id[0], #還沒加早鳥票填入
+            ticket.personal_id,
             ticket.phone,
             first.start_station,
             first.dest_station,
