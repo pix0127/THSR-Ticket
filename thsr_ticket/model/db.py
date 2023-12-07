@@ -15,6 +15,7 @@ from thsr_ticket.configs.web.param_schema import (
 class Record(NamedTuple):
     personal_id: List[str] = None
     phone: str = None
+    email: str = None
     start_station: int = None
     dest_station: int = None
     outbound_date: str = None
@@ -38,6 +39,7 @@ class RecordTrainPage:
 class RecordTicketPage:
     personal_id: List[str] = None
     phone: str = None
+    email: str = None
 
 
 class ParamDB:
@@ -58,6 +60,7 @@ class ParamDB:
         data = Record(
             ticket.personal_id,
             ticket.phone_num,
+            ticket.email,
             book_model.start_station,
             book_model.dest_station,
             book_model.outbound_date,
@@ -76,6 +79,7 @@ class ParamDB:
         data = Record(
             ticket.personal_id,
             ticket.phone,
+            ticket.email,
             first.start_station,
             first.dest_station,
             first.outbound_date,

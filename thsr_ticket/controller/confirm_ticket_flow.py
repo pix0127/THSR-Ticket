@@ -23,6 +23,7 @@ class ConfirmTicketFlow:
         ticket_model = ConfirmTicketModel(
             personal_id=self.set_personal_id(),
             phone_num=self.set_phone_num(),
+            email=self.set_email(),
             member_radio=_parse_member_radio(page),
             member_id=self.set_member_id(),
             early_member0_id=self.set_early_member_id(0, page),
@@ -45,10 +46,14 @@ class ConfirmTicketFlow:
     def set_phone_num(self) -> str:
         if self.record and (phone_num := self.record.phone):
             return phone_num
-
-        if phone_num := input('輸入手機號碼（預設：""）：\n'):
-            return phone_num
-        return ""
+        phone_num = input('輸入手機號碼:\n')
+        return phone_num
+    
+    def set_email(self) -> str:
+        if self.record and (email := self.record.email):
+            return email
+        email = input('輸入email:\n')
+        return email
     
     def set_member_id(self) -> str:
         if len(self.id) > 0 and (personal_id := self.record.personal_id[0]):

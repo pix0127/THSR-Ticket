@@ -92,8 +92,10 @@ class BookingFlow:
         for i in range(adult_num):
             personal_id.append(input("請輸入第%i位身分證字號：" % (i + 1)))
         phone = input("請輸入手機號碼：")
+        email = input("請輸入email：")
         rst.personal_id = personal_id
         rst.phone = phone
+        rst.email = email
         return rst
 
     def show_history(self) -> None:
