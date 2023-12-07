@@ -66,15 +66,14 @@ class BookingFlow:
             while count < max_retries:
                 if self.is_error(self.__run().content):
                     count += 1
+                    self.client = HTTPRequest()
                 else:
                     break
             if count == max_retries:
                 print("第{}筆訂購失敗".format(hist.index(i) + 1))
-                self.client = HTTPRequest()
             else:
                 print("第{}筆訂購成功".format(hist.index(i) + 1))
                 remove_list.append(hist.index(i) + 1)
-                self.client = HTTPRequest()
         for i in remove_list:
             self.db.remove(i)
 
@@ -83,7 +82,7 @@ class BookingFlow:
         if self.show_error(book_resp.content):
             return book_resp
         train_data = ConfirmTrainFlow(self.client, book_resp).check_info()
-        number = int(''.join(filter(str.isdigit, first_data.adult_num[0])))
+        number = int("".join(filter(str.isdigit, first_data.adult_num[0])))
         tickit_data = self.get_ticket_data(number)
         self.db.save(first_data, train_data, tickit_data)
 
