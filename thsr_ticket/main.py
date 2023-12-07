@@ -1,20 +1,26 @@
 import sys
+
 sys.path.append("./")
 
-from thsr_ticket.remote.endpoint_client import EndpointClient
-from thsr_ticket.model.json.v1.train import Train
+import argparse
 from thsr_ticket.controller.booking_flow import BookingFlow
 
 
+def handle_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-n", "--new", help="New reserve", action="store_true")
+    parser.add_argument("-r", "--run", help="Auto run", action="store_true")
+    return parser.parse_args()
+
+
 def main():
+    args = handle_args()
     flow = BookingFlow()
-    #flow.add_new_reserve()
-    flow.auto_run()
+    if args.new:
+        flow.add_new_reserve()
+    if args.run:
+        flow.auto_run()
 
 
 if __name__ == "__main__":
-    #client = EndpointClient()
-    #resp = client.get_trains_by_date("2020-01-25")
-    #train = Train().from_json(resp[0])
-
     main()

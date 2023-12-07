@@ -82,9 +82,7 @@ class BookingFlow:
         book_resp, first_data = FirstPageFlow(self.client).check_info()
         if self.show_error(book_resp.content):
             return book_resp
-        train_resp, train_data = ConfirmTrainFlow(self.client, book_resp).check_info()
-        if self.show_error(train_resp.content):
-            return train_resp
+        train_data = ConfirmTrainFlow(self.client, book_resp).check_info()
         number = int(''.join(filter(str.isdigit, first_data.adult_num[0])))
         tickit_data = self.get_ticket_data(number)
         self.db.save(first_data, train_data, tickit_data)

@@ -20,7 +20,6 @@ class ConfirmTrainFlow:
         if not trains:
             raise ValueError("No available trains!")
         confirm_model = ConfirmTrainModel(
-            # selected_train=self.select_available_trains(trains),
             selected_train=self.select_available_trains_with_departtime(
                 trains, self.record.selection_time
             ),
@@ -30,32 +29,22 @@ class ConfirmTrainFlow:
         resp = self.client.submit_train(dict_params)
         return resp, confirm_model
 
-    def check_info(self) -> Tuple[Response, RecordTrainPage]:
+    def check_info(self) -> RecordTrainPage:
         trains = AvailTrains().parse(self.book_resp.content)
         if not trains:
             raise ValueError("No available trains!")
-        selected_train = self.select_available_trains(trains)
-        confirm_model = ConfirmTrainModel(selected_train=selected_train.form_value)
-        json_params = confirm_model.json(by_alias=True)
-        dict_params = json.loads(json_params)
-        resp = self.client.submit_train(dict_params)
         record_data = RecordTrainPage()
         record_data.selection_time = []
-        record_data.selection_time.append(selected_train.depart)
-        return resp, record_data
-
-    def select_available_trains(
-        self, trains: List[Train], default_value: int = 1
-    ) -> Train:
-        if self.record and self.record.selected_train != None:
-            return self.record.selected_train
         for idx, train in enumerate(trains, 1):
             print(
                 f"{idx}. {train.id:>4} {train.depart:>3}~{train.arrive} {train.travel_time:>3} "
                 f"{train.discount_str}"
             )
-        selection = int(input(f"輸入選擇（預設：{default_value}）：") or default_value)
-        return trains[selection - 1]
+        selection = input(f"輸入選擇(enter 空白跳掉):")
+        while selection:
+            record_data.selection_time.append(trains[int(selection) - 1].depart)
+            selection = input(f"輸入選擇(enter 空白跳掉):")
+        return record_data
 
     def select_available_trains_with_departtime(
         self, trains: List[Train], trains_departtime: List[str]
