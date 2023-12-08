@@ -64,11 +64,15 @@ class BookingFlow:
             self.record = i
             count = 0
             while count < max_retries:
-                if self.is_error(self.__run().content):
-                    count += 1
+                try:
                     self.client = HTTPRequest()
-                else:
-                    break
+                    if self.is_error(self.__run().content):
+                        count += 1
+                    else:
+                        break
+                except Exception as e:
+                    print("出現 exception: %s 重新嘗試" %(e))
+                    count += 1
             if count == max_retries:
                 print("第{}筆訂購失敗".format(hist.index(i) + 1))
             else:
@@ -90,9 +94,9 @@ class BookingFlow:
         rst = RecordTicketPage()
         personal_id = []
         for i in range(adult_num):
-            personal_id.append(input("請輸入第%i位身分證字號：" % (i + 1)))
-        phone = input("請輸入手機號碼：")
-        email = input("請輸入email：")
+            personal_id.append(input("請輸入第%i位身分證字號:" % (i + 1)))
+        phone = input("請輸入手機號碼:")
+        email = input("請輸入email:")
         rst.personal_id = personal_id
         rst.phone = phone
         rst.email = email
