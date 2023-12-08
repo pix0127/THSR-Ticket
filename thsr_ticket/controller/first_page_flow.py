@@ -1,5 +1,6 @@
 import io
 import json
+import os, sys
 import numpy as np
 import ddddocr
 from PIL import Image
@@ -159,7 +160,9 @@ def _input_security_code(img_resp: bytes) -> str:
     image = Image.open(io.BytesIO(img_resp))
     clean_img(np.array(image))
     io_buf = io.BytesIO(clean_img(np.array(image)))
+    old_stdout = sys.stdout # backup current stdout
+    sys.stdout = open(os.devnull, "w")
     ocr = ddddocr.DdddOcr()
     res = ocr.classification(io_buf.getvalue())
-    print(res)
+    sys.stdout = old_stdout
     return res.upper()
