@@ -1,5 +1,5 @@
 import os
-from typing import Mapping, List, Iterable, Any, NamedTuple
+from typing import Mapping, List, Iterable, Any, NamedTuple, Tuple
 
 from tinydb import TinyDB, Query
 from tinydb.database import Document
@@ -90,10 +90,10 @@ class ParamDB:
         with TinyDB(self.db_path, sort_keys=True, indent=4) as db:
             db.insert(data)
 
-    def get_history(self) -> List[Record]:
+    def get_history(self) -> List[Tuple[int, Record]]:
         with TinyDB(self.db_path) as db:
             dicts = db.all()
-        return [Record(**d) for d in dicts]  # type: ignore
+        return [[d.doc_id, Record(**d)] for d in dicts]  # type: ignore
 
     def _compare_hist(self, data: Mapping[str, Any], hist: Iterable[Document]) -> int:
         for idx, h in enumerate(hist):

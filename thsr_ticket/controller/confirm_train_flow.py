@@ -53,6 +53,7 @@ class ConfirmTrainFlow:
             rst = self.get_form_value_by_id(trains, id)
             if rst != None:
                 return rst
+        print("找不到指定班次,被買光了QQ")
         return None
 
     def get_form_value_by_id(self, trains: List[Train], leavetime: str) -> Train:

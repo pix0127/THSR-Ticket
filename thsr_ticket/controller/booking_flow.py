@@ -58,10 +58,10 @@ class BookingFlow:
         return ticket_resp
 
     def auto_run(self):
-        hist = self.db.get_history()
+        hists = self.db.get_history()
         remove_list = []
-        for i in hist:
-            self.record = i
+        for hist in hists:
+            self.record = hist[1]
             count = 0
             while count < max_retries:
                 try:
@@ -71,15 +71,15 @@ class BookingFlow:
                     else:
                         break
                 except Exception as e:
-                    print("出現 exception: %s 重新嘗試" %(e))
+                    print("出現 exception: %s 重新嘗試" % (e))
                     count += 1
             if count == max_retries:
-                print("第{}筆訂購失敗".format(hist.index(i) + 1))
+                print("第 %d 筆訂購失敗" % (hist[0]))
             else:
-                print("第{}筆訂購成功".format(hist.index(i) + 1))
-                remove_list.append(hist.index(i) + 1)
-        for i in remove_list:
-            self.db.remove(i)
+                print("第 %d 筆訂購成功" % (hist[0]))
+                remove_list.append(hist[0])
+        for target in remove_list:
+            self.db.remove(target)
 
     def add_new_reserve(self):
         book_resp, first_data = FirstPageFlow(self.client).check_info()
