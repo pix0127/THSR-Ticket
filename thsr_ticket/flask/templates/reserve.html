@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserve Ticket</title>
+</head>
+<body>
+    <h1>Reserve Ticket</h1>
+    <form action="/reserve" method="post">
+        <div class="form-container">
+            <div class="form-group">
+                <label for="start_station">Select Start Station:</label>
+                <select name="start_station" id="start_station">
+                    {% for station in stations %}
+                        <option value="{{ station.value }}">{{ station.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dest_station">Select Destination Station:</label>
+                <select name="dest_station" id="dest_station">
+                    {% for station in stations %}
+                        <option value="{{ station.value }}">{{ station.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button type="submit">Reserve</button>
+    </form>
+</body>
+</html>
