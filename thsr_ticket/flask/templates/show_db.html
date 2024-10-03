@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Records</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div>
+        <h1>Database Records</h1>
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Adult Num</th>
+                    <th>Start Station</th>
+                    <th>Dest Station</th>
+                    <th>Email</th>
+                    <th>Outbound Date</th>
+                    <th>Outbound Time</th>
+                    <th>Personal ID</th>
+                    <th>Phone</th>
+                    <th>Selection Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be inserted here by jQuery -->
+            </tbody>
+        </table>
+        <p id="loading">Loading data...</p>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
