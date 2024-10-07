@@ -1,5 +1,10 @@
-$(document).ready(function() {
-    console.log('Document is ready');
+document.addEventListener('DOMContentLoaded', function() {
+    // 初始化 flatpickr
+    flatpickr("#travel_date", {
+        minDate: "today",
+        maxDate: new Date().fp_incr(30) // 30 days from now
+    });
+
     $.getJSON('/api/data', function(data) {
         console.log('Data received:', data);
         var tableBody = $('#data-table tbody');

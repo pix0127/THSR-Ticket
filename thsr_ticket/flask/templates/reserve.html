@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reserve Ticket</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
     <h1>Reserve Ticket</h1>
@@ -25,8 +26,24 @@
                     {% endfor %}
                 </select>
             </div>
+            <div class="form-group">
+                <label for="travel_date">Select Travel Date:</label>
+                <input type="text" name="travel_date" id="travel_date">
+            </div>
+            <div class="form-group">
+                <label for="travel_time">Select Travel Time:</label>
+                <select name="travel_time" id="travel_time">
+                    {% for time in available_times %}
+                        <option value="{{ time }}">{{ time }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
         </div>
         <button type="submit">Reserve</button>
     </form>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="{{ url_for('static', filename='js/app1.js') }}"></script>
 </body>
 </html>
