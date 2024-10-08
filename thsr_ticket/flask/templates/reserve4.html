@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 4: Reservation Result</title>
+    <script>
+        // 在頁面加載後五秒自動跳轉到 reserve_step1
+        setTimeout(function() {
+            window.location.href = "/reserve/step1";
+        }, 5000);
+    </script>
+</head>
+<body>
+    <h1>Reservation Result</h1>
+    <p>{{ success }}</p>
+    <p>Redirecting to the first step in 5 seconds...</p>
+</body>
+</html>

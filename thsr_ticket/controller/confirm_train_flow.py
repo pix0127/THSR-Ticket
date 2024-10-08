@@ -28,6 +28,15 @@ class ConfirmTrainFlow:
         dict_params = json.loads(json_params)
         resp = self.client.submit_train(dict_params)
         return resp, confirm_model
+    
+    def run(self, data: RecordTrainPage) -> Tuple[Response, ConfirmTrainModel]:
+        confirm_model = ConfirmTrainModel(
+            selected_train=data.selection_time
+        )
+        json_params = confirm_model.json(by_alias=True)
+        dict_params = json.loads(json_params)
+        resp = self.client.submit_train(dict_params)
+        return resp, confirm_model
 
     def check_info(self) -> RecordTrainPage:
         trains = AvailTrains().parse(self.book_resp.content)

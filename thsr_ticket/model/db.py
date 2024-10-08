@@ -89,6 +89,10 @@ class ParamDB:
         )._asdict()
         with TinyDB(self.db_path, sort_keys=True, indent=4) as db:
             db.insert(data)
+    
+    def save(self, data: Record) -> None:
+        with TinyDB(self.db_path, sort_keys=True, indent=4) as db:
+            db.insert(data._asdict())
 
     def get_history(self) -> List[Tuple[int, Record]]:
         with TinyDB(self.db_path) as db:

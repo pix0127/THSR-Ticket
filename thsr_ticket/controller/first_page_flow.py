@@ -53,6 +53,29 @@ class FirstPageFlow:
         resp = self.client.submit_booking_form(dict_params)
         return resp, book_model
     
+    def run(self, record: RecordFirstPage) -> Tuple[Response, BookingModel]:
+        # First page. Booking options
+        print("請稍等...")
+        book_page = self.client.request_booking_page().content
+        img_resp = self.client.request_security_code_img(book_page).content
+        page = BeautifulSoup(book_page, features="html.parser")
+
+        book_model = BookingModel(
+            start_station=record.start_station,
+            dest_station=record.dest_station,
+            outbound_date=record.outbound_date,
+            outbound_time=record.outbound_time,
+            adult_ticket_num=f"{record.adult_num}{TicketType.ADULT.value}",
+            seat_prefer=_parse_seat_prefer_value(page),
+            types_of_trip=_parse_types_of_trip_value(page),
+            search_by=_parse_search_by(page),
+            security_code=_input_security_code(img_resp),
+        )
+        json_params = book_model.json(by_alias=True)
+        dict_params = json.loads(json_params)
+        resp = self.client.submit_booking_form(dict_params)
+        return resp, book_model
+    
     def check_info(self) -> Tuple[Response, RecordFirstPage]:
         resp , book_model=self.run()
         record_data = RecordFirstPage()

@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from requests.models import Response
 from thsr_ticket.configs.web.param_schema import ConfirmTicketModel
 
-from thsr_ticket.model.db import Record
+from thsr_ticket.model.db import Record, RecordTicketPage
 from thsr_ticket.remote.http_request import HTTPRequest
 
 
@@ -35,6 +35,26 @@ class ConfirmTicketFlow:
         dict_params = json.loads(json_params)
         resp = self.client.submit_ticket(dict_params)
         return resp, ticket_model
+
+    def run(self, data: RecordTicketPage, is_send:bool = False) -> Tuple[Response, ConfirmTicketModel]:
+        page = BeautifulSoup(self.train_resp.content, features="html.parser")
+        ticket_model = ConfirmTicketModel(
+            personal_id=self.set_personal_id(),
+            phone_num=self.set_phone_num(),
+            email=self.set_email(),
+            member_radio=_parse_member_radio(page),
+            member_id=self.set_member_id(),
+            early_member0_id=self.set_early_member_id(0, page),
+            early_member1_id=self.set_early_member_id(1, page),
+            early_member2_id=self.set_early_member_id(2, page),
+        )
+        if is_send:
+            json_params = ticket_model.json(by_alias=True)
+            dict_params = json.loads(json_params)
+            resp = self.client.submit_ticket(dict_params)
+            return resp, ticket_model
+        else:
+            return None, ticket_model
 
     def set_personal_id(self) -> str:
         if self.record and (personal_id := self.record.personal_id):

@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Reserve Ticket</h1>
-    <form action="/reserve" method="post">
+    <form action="/reserve/step1" method="post">
         <div class="form-container">
             <div class="form-group">
                 <label for="start_station">Select Start Station:</label>
@@ -38,9 +38,11 @@
                     {% endfor %}
                 </select>
             </div>
-
+            <label for="adult_num">Number of Adults:</label>
+            <input type="number" id="adult_num" name="adult_num" required>
+            <br>
         </div>
-        <button type="submit">Reserve</button>
+        <button type="submit">Next</button>
     </form>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
